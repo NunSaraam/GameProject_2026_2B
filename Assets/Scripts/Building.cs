@@ -18,9 +18,13 @@ public class Building : MonoBehaviour
 
     public BuildingEvents buildingEvents;
 
+    private DeliveryOrderSystem orderSystem;
+
     private void Start()
     {
         SetupBuilding();
+        orderSystem = FindFirstObjectByType<DeliveryOrderSystem>();
+        CreateNameTag();
     }
 
     void HandleDriverService(DeliveryDriver driver)
@@ -28,12 +32,21 @@ public class Building : MonoBehaviour
         switch (buildingType)
         {
             case BuildingType.Restaurant:
-                Debug.Log($"{buildingName} 에서 음식을 픽업 했습니다.");
+                if (orderSystem != null)
+                {
+                    orderSystem.OnDriverEnteredRestaurant(this);
+                }
                 break;
 
             case BuildingType.Customer:
-                Debug.Log($"{buildingName} 배달 완료.");
-                driver.CompleteDelivery();
+                if (orderSystem != null)
+                {
+                    orderSystem.OnDriverEnteredCustomer(this);
+                }
+                else
+                {
+                    driver.CompleteDelivery();
+                }
                 break;
 
             case BuildingType.ChargingStation:
@@ -41,6 +54,8 @@ public class Building : MonoBehaviour
                 driver.ChargeBattery();
                 break;
         }
+
+        buildingEvents.OnServiceUsed?.Invoke(buildingType);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -77,22 +92,35 @@ public class Building : MonoBehaviour
             {
                 case BuildingType.Restaurant:
                     mat.color = Color.red;
-                    buildingName = "음식점";
                     break;
 
                 case BuildingType.Customer:
                     mat.color = Color.green;
-                    buildingName = "고객 집";
                     break;
 
                 case BuildingType.ChargingStation:
                     mat.color = Color.yellow;
-                    buildingName = "충전소";
                     break;
             }
         }
 
         Collider col = GetComponent<Collider>();
         if (col != null) { col.isTrigger = true; }
+    }
+
+    void CreateNameTag()
+    {
+        GameObject nameTag = new GameObject("NameTag");
+        nameTag.transform.SetParent(transform);
+        nameTag.transform.localPosition = Vector3.up * 1.5f;
+
+        TextMesh textMesh = nameTag.AddComponent<TextMesh>();
+        textMesh.text = buildingName;
+        textMesh.characterSize = .2f;
+        textMesh.anchor = TextAnchor.MiddleCenter;
+        textMesh.color = Color.white;
+        textMesh.fontSize = 20;
+
+        nameTag.AddComponent<Billboard>();
     }
 }
