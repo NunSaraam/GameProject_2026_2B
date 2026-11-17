@@ -137,6 +137,7 @@ namespace CoreClash.Lesson01.Course
             {
                 Move = Vector2.ClampMagnitude(move, 1f)
             });
+
         }
 
         private static NetworkRunner CreateRunner()
