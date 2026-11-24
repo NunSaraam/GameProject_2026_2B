@@ -308,8 +308,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CoreClash.Lesson02.Lesson02Player
   meleeRange: 2.2
   meleeDamage: 25
+  moveSpeed: 5
+  turnSpeed: 14
   _Health: 0
   _Cores: 0
+  projectilePrefab: {fileID: 6463329345251974647, guid: e993eb1c7c960fa44bf2669ee092ee18, type: 3}
+  magazineSize: 6
+  _Ammo: 0
+  _kills: 0
+  _IsDead:
+    RawValue: 0
+  _IsInvincible:
+    RawValue: 0
 --- !u!1 &5706358187882473519
 GameObject:
   m_ObjectHideFlags: 0
